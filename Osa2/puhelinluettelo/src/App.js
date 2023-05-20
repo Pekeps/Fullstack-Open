@@ -2,6 +2,50 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
 
+const Notification = ({ message }) => {
+  const notificationStyle = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+  
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div style={notificationStyle}>
+      {message}
+    </div>
+  )
+}
+
+const Error = ({ message }) => {
+  const errorStyle = {
+    color: 'red',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+  
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div style={errorStyle}>
+      {message}
+    </div>
+  )
+}
+
 const Filter = ({ newFilter, handleFilterChange }) => {
   return (
   <form>
@@ -60,6 +104,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -85,12 +131,26 @@ const App = () => {
       number: newNumber
     }
     if (persons.some(e => e.name === newName)) {
-      if (window.confirm(`${newName} is already added to phonebook, replace th eold number with a new one?`)) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         console.log(findIdByName(newName))
         personService
           .changeNumber({ id:findIdByName(newName), person:person})
           .then(response => {
             setPersons(persons.map(person => person.id !== findIdByName(newName) ? person : response.data))
+            setNotificationMessage(
+              `changed ${newName} number to ${newNumber}`
+            )
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setErrorMessage(
+              `Information of ${newName} has already been removed from server`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
       }
 
@@ -99,6 +159,12 @@ const App = () => {
         .create(person)
         .then(response => {
           setPersons(persons.concat(response.data))
+          setNotificationMessage(
+            `Added ${newName}`
+          )
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
           setNewNumber('')
           setNewName('')
         })
@@ -121,7 +187,13 @@ const App = () => {
       personService
       .removePerson(id)
       .then(() => {
-        setPersons(persons.filter(person => person.id !== id ));
+        setPersons(persons.filter(person => person.id !== id ))
+        setNotificationMessage(
+          `Removed ${name}`
+        )
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       })}
     }
 
@@ -129,6 +201,9 @@ const App = () => {
   return (
     <div>
       <h1>phonebook</h1>
+
+      <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
 
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
 
