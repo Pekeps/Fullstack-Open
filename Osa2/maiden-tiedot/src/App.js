@@ -45,21 +45,21 @@ const LanguageList = ({ languages }) => {
 }
 
 const CountryInformation = ({ countriesToShow }) => {
-  
-
-  if (countriesToShow === null) {
+ if (countriesToShow === null) {
     return null
   }
-  const country = countriesToShow[0]
-  return(
-     <>
-     <h1>{country.name.common}</h1>
-     <p>capital: {country.capital}</p>
-     <p>area: {country.area}</p>
-     <h3>languages:</h3>
-     <LanguageList languages={country.languages} />
-     <img src={country.flags.png} />
-     </>
+
+const country = countriesToShow[0]
+
+return(
+    <>
+    <h1>{country.name.common}</h1>
+    <p>capital: {country.capital}</p>
+    <p>area: {country.area}</p>
+    <h3>languages:</h3>
+    <LanguageList languages={country.languages} />
+    <img src={country.flags.png} />
+    </>
   )
 }
 
@@ -85,7 +85,6 @@ const App = () => {
   
   const apiKey = process.env.REACT_APP_API_KEY
   const baseUrl = 'http://api.weatherapi.com/v1/current.json?key='
-
 
   const handleFilterChange = (event) => {
     setNewFilter(event.target.value)
@@ -135,7 +134,7 @@ const App = () => {
 
       <CountryInformation countriesToShow={countryToDisplay} />
 
-      <Weather weather={weather} country={countryToDisplay} />
+      <Weather weather={weather} />
     </div>
   )
 
