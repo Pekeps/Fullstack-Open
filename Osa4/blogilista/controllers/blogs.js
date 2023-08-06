@@ -1,37 +1,44 @@
 const blogsRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
 const Blog = require('../models/blogs')
+const User = require('../models/user')
+const { userExtractor } = require('../utils/middleware')
+
+require('express-async-errors')
 
 blogsRouter.get('/blogs', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
-blogsRouter.post('/blogs', async (request, response) => {
+blogsRouter.post('/blogs',  userExtractor, async (request, response) => {
   const { title, author, url } = request.body
   const likes = request.body.likes !== undefined ? request.body.likes : 0
+
+  const user = await User.findById(request.user)
 
   const blog = new Blog({
     title,
     author,
     url,
     likes,
+    user: user._id,
   })
-
-  try {
+ 
     const result = await blog.save()
+    user.blogs = user.blogs.concat(result._id)
+    await user.save()
     response.status(201).json(result)
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      response.status(400).json({ error: error.message })
-    } else {
-      response.status(500).json({ error: 'An error occurred while creating the blog.' })
-    }
-  }
 })
 
-blogsRouter.delete('/blogs/:id', async (request, response) => {
-  const result = await Blog.findByIdAndRemove(request.params.id)
+blogsRouter.delete('/blogs/:id', userExtractor, async (request, response) => {
+
+  
+  const blog = await Blog.findById(request.params.id)
+  if ( request.user === blog.user.toString() ) {
+    const result = await Blog.findByIdAndRemove(request.params.id)
   response.status(204).json(result)
+  }
 })
 
 blogsRouter.put('/blogs/:id', async (request, response) => {

@@ -110,7 +110,6 @@ describe('when there is initially some blogs saved', () => {
 
   test('updating blog information', async () => {
     const blogsAtStart = await helper.blogsInDb()
-    console.log(blogsAtStart)
     const blogToUpdate = blogsAtStart[0]
 
     const updatedBlog = {
