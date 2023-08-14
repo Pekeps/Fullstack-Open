@@ -59,19 +59,19 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     try {
-    const response = await blogService.create(blogObject)
-    blogFormRef.current.toggleVisibility()
-    setBlogs(blogs.concat(response))
-    setMessage(`added ${blogObject.title} by ${blogObject.author}`)
-    setTimeout(() => {
-      setMessage(null)
-    }, 4000)
-    } catch (exception) {}
+      const response = await blogService.create(blogObject)
+      blogFormRef.current.toggleVisibility()
+      setBlogs(blogs.concat(response))
+      setMessage(`added ${blogObject.title} by ${blogObject.author}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 4000)
+    } catch (exception) { /* empty */ }
   }
 
   const updateBlogById = id => {
     const blog = blogs.find(b => b.id === id)
-    const changedBlog = {...blog, likes: blog.likes += 1}
+    const changedBlog = { ...blog, likes: blog.likes += 1 }
     console.log(changedBlog)
     blogService
       .update(id, changedBlog)
@@ -79,7 +79,7 @@ const App = () => {
         setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
       })
       .catch(() => {
-        setErrorMessage( `Blog wass allready removed from server`)
+        setErrorMessage( 'Blog wass allready removed from server')
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
@@ -91,17 +91,17 @@ const App = () => {
     const blog = blogs.find(b => b.id === id)
     if (window.confirm(`Delete ${blog.title}`)) {
       blogService.deleteBlog(id)
-        .then(response => {
+        .then(() => {
           setBlogs(blogs.filter(b => b.id !== id))
         })
-  }
+    }
   }
 
   const ErrorNotification = ({ message }) => {
     if (message === null) {
       return null
     }
-  
+
     return (
       <div className="error">
         {message}
@@ -113,7 +113,7 @@ const App = () => {
     if (message === null) {
       return null
     }
-  
+
     return (
       <div className="notification">
         {message}
@@ -128,21 +128,21 @@ const App = () => {
 
   return (
     <>
-    <h1>Blog app</h1>
-    <ErrorNotification message={errorMessage} />
-    <Notification message={message} />
+      <h1>Blog app</h1>
+      <ErrorNotification message={errorMessage} />
+      <Notification message={message} />
 
 
-    {!user &&
-      <LoginForm 
+      {!user &&
+      <LoginForm
         handleLogin={handleLogin}
         username={username}
         setUsername={setUsername}
         password={password}
         setPassword={setPassword}
       />
-    }
-    {user &&
+      }
+      {user &&
       <div>
         <h2>Logged in as {user.name}</h2>
 
@@ -156,21 +156,21 @@ const App = () => {
           <h2>New blog</h2>
           <BlogForm createBlog={addBlog}/>
         </Togglable>
-        
+
         <h2>blogs</h2>
-          {sortedBlogs.map(blog =>
-          <Blog 
-          key={blog.id}
-          blog={blog} 
-          updateBlog={() => updateBlogById(blog.id)}  
-          deleteBlog={() => deleteBlogById(blog.id)} 
-          isCreator={user.name === blog.name ? true : false}
+        {sortedBlogs.map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={() => updateBlogById(blog.id)}
+            deleteBlog={() => deleteBlogById(blog.id)}
+            isCreator={user.name === blog.name ? true : false}
           />
         )}
       </div>
       }
-  </>
-)
+    </>
+  )
 
 }
 

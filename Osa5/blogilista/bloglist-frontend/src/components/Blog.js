@@ -1,4 +1,4 @@
-import Togglable from "./Toggleble"
+import Togglable from './Toggleble'
 
 const Blog = ({ blog, updateBlog, deleteBlog, isCreator }) => {
   const blogStyle = {
@@ -10,18 +10,18 @@ const Blog = ({ blog, updateBlog, deleteBlog, isCreator }) => {
   }
 
   return (
-  <div style={blogStyle}>
-    {blog.title} {blog.author}
-    <Togglable buttonLabel="view">
-      {blog.url} <br />
-      {blog.likes}
-      <button onClick={updateBlog}>like</button> <br />
-      {blog.name} <br />
-      {isCreator && <div><button onClick={deleteBlog}>remove</button></div>}
+    <div style={blogStyle}>
+      {blog.title} {blog.author}
+      <Togglable buttonLabel="view">
+        {blog.url} <br />
+        {blog.likes}
+        <button onClick={updateBlog}>like</button> <br />
+        {blog.name} <br />
+        {isCreator && <div><button onClick={deleteBlog}>remove</button></div>}
 
-    </Togglable>
-  </div>  
+      </Togglable>
+    </div>
   )
-  }
+}
 
 export default Blog
