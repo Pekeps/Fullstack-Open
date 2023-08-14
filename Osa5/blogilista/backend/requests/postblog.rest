@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY0Y2U5NGM4NzgzNGM5MTRmYjU2MjYyMyIsImlhdCI6MTY5MTQ5MTIzMn0._BzwxCpNX9d5bOW2YLDSINc-_J-d1OC7Og2Nh1iks0U
+
+{
+  "title": "VERRY LONG TITEL xD",
+  "author": "dumb",
+  "url": "url",
+  "likes": 258
+}
