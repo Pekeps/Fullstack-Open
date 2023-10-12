@@ -6,7 +6,6 @@ const notificationSlice = createSlice({
   initialState: '',
   reducers: {
     notificationChange(state, action) {
-      console.log('xddasdf')
       const { payload } = action
       return payload
     }
